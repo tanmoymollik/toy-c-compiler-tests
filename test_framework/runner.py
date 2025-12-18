@@ -232,6 +232,12 @@ def parse_arguments() -> argparse.Namespace:
         action="store_true",
         help="Run register allocation tests that don't rely on coalescing",
     )
+    parser.add_argument(
+        "--target",
+        type=str,
+        default="x86_64",
+        choices=["x86_64", "riscv64"],
+    )
     # extra args to pass through to compiler, should be followed by --
     parser.add_argument("extra_cc_options", type=str, nargs="*")
     args = parser.parse_intermixed_args()
@@ -416,7 +422,7 @@ def is_valid_test_case(failure_case: unittest.TestCase) -> bool:
     return True
 
 
-def gen_assembly(failure_case: test_framework.basic.TestChapter) -> None:
+def gen_assembly(failure_case: test_framework.basic.TestChapter, target: str) -> None:
     """Recompile failed test with -S option to generate assembly"""
     # HACK: work backwards from test method name to determine name of file under test
     # given fully qualified test name (e.g.
@@ -431,7 +437,7 @@ def gen_assembly(failure_case: test_framework.basic.TestChapter) -> None:
     # compile it with -S option (note that we don't need -lm or -c b/c we stop before assembly/linking)
     # if compilation fails, don't raise an error or print out stdout/stderr; we've already
     # reported that issue during test run
-    compiler_args = [failure_case.cc] + failure_case.options + ["-S", absolute_src_path]
+    compiler_args = [failure_case.cc] + failure_case.options + ["-S", absolute_src_path] + ["--" + target]
     subprocess.run(compiler_args, check=False, text=True, capture_output=True)
 
 
@@ -487,6 +493,7 @@ def main() -> int:
                 extra_credit_flags=extra_credit,
                 skip_invalid=args.skip_invalid,
                 error_codes=args.expected_error_codes,
+                target=args.target,
             )
             test_instance = unittest.defaultTestLoader.loadTestsFromTestCase(test_class)
             test_suite.addTest(test_instance)
@@ -531,6 +538,6 @@ def main() -> int:
             # no point in trying to emit assembly for invalid test programs,
             # since the compiler is supposed to fail before assembly generation
             if is_valid_test_case(failure_case):
-                gen_assembly(failure_case)
+                gen_assembly(failure_case, args.target)
 
     return 1
