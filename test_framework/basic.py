@@ -102,6 +102,7 @@ def gcc_compile_and_run(
     Args:
         source_files: list of input files - could be C, assembly, or object files
         options: command-line options
+        target: the target architecture of the compiled code
 
     Returns:
         a CompletedProcess object that captures the executable's return code and output
@@ -745,6 +746,7 @@ def build_test_class(
         extra_credit_flags: extra credit features to test, represented as a bit vector
         skip_invalid: true if we should skip invalid test programs
         error_codes: expected compiler exit codes when rejecting invalid programs
+        target: target architecture for the compiled code
     """
 
     # base directory with all of this chapter's test programs

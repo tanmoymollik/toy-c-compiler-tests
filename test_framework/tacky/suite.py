@@ -52,6 +52,8 @@ def configure_tests(
     setattr(cls, "cc", compiler)
     setattr(cls, "options", options)
     setattr(cls, "exit_stage", None)
+    # Tacky optimization tests can only verify for x86_64 gas style assembly.
+    setattr(cls, "target", "x86_64")
 
     tests: Iterable[Path]
     if cls == unreachable.TestUnreachableCodeElim:
