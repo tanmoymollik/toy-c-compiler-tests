@@ -12,6 +12,10 @@ works.
 This repo implements a new command line argument `--target` for the runner.
 By default it's set to `x86_64` but can be overridden to `riscv64`.
 
+*NOTE:* The tests for chapter 19 and 20 are intricately tied to the gnu x86_64
+architecture. So this test suite won't work for those 2 chapters. I will try to
+re-implement those test suites for risc-v in the future.
+
 # Prerequisites
 
 The test suite assumes that riscv64 toolchain is already installed. Library tests
