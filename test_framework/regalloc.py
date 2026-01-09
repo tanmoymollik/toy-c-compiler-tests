@@ -483,6 +483,8 @@ def configure_tests(
     setattr(TestRegAlloc, "options", options)
     # can't test intermediate stages for reg allocation
     setattr(TestRegAlloc, "exit_stage", None)
+    # Regalloc tests can only verify for x86_64 gas style assembly.
+    setattr(TestRegAlloc, "target", "x86_64")
 
     # include all test programs in chapter_20/int_only/
     # if the reader completed part II, also include all the test programs in chapter_20/all_types/
